@@ -56,7 +56,7 @@ describe('validation::tests', function (): void {
     ]);
 
     test('email::validations', function ($value, $rule): void {
-
+        User::factory()->create(['email' => 'email@test.com']);
         livewire(CreateUser::class)
             ->fillForm([
                 'email' => $value,
@@ -67,6 +67,7 @@ describe('validation::tests', function (): void {
     })->with([
         'required' => ['', 'The email address field is required.'],
         'email' => ['not-email', 'The email address field must be a valid email address.'],
+        'unique' => ['email@test.com', 'The email address has already been taken.'],
     ]);
 
     test('password::validations', function ($value, $rule): void {
