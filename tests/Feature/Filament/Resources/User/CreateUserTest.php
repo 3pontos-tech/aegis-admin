@@ -34,3 +34,51 @@ it('should be able to create a user', function (): void {
     ]);
 
 });
+
+describe('validation::tests', function (): void {
+
+    beforeEach(function (): void {
+        actingAs(User::factory()->create());
+    });
+
+    test('name::validations', function ($value, $rule): void {
+
+        livewire(CreateUser::class)
+            ->fillForm([
+                'name' => $value,
+            ])
+            ->call('create')
+            ->assertHasFormErrors(['name' => $rule]);
+
+    })->with([
+        'required' => ['', 'The name field is required.'],
+        'max:255' => [str_repeat('a', 256), 'max:255'],
+    ]);
+
+    test('email::validations', function ($value, $rule): void {
+
+        livewire(CreateUser::class)
+            ->fillForm([
+                'email' => $value,
+            ])
+            ->call('create')
+            ->assertHasFormErrors(['email' => $rule]);
+
+    })->with([
+        'required' => ['', 'The email address field is required.'],
+        'email' => ['not-email', 'The email address field must be a valid email address.'],
+    ]);
+
+    test('password::validations', function ($value, $rule): void {
+
+        livewire(CreateUser::class)
+            ->fillForm([
+                'password' => $value,
+            ])
+            ->call('create')
+            ->assertHasFormErrors(['password' => $rule]);
+
+    })->with([
+        'required' => ['', 'The password field is required.'],
+    ]);
+});
