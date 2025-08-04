@@ -7,7 +7,9 @@ namespace App\Filament\Admin\Resources\Departments\Schemas;
 use App\Filament\Shared\Schemas\Form\NameInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 
 final class DepartmentForm
 {
@@ -24,7 +26,19 @@ final class DepartmentForm
                     ->required(),
                 Select::make('manager_id')
                     ->relationship('manager', 'name')
-                    ->required(),
+                    ->required()
+                    ->reactive(),
+                Select::make('users')
+                    ->relationship(name: 'users', titleAttribute: 'name', modifyQueryUsing: function (Builder $query, Get $get): Builder {
+                        if ($managerId = $get('manager_id')) {
+                            $query->where('users.id', '!=', $managerId);
+                        }
+
+                        return $query;
+                    })
+                    ->required()
+                    ->multiple()
+                    ->preload(),
             ]);
     }
 }

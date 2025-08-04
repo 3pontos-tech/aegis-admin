@@ -10,4 +10,11 @@ use Filament\Resources\Pages\CreateRecord;
 final class CreateDepartment extends CreateRecord
 {
     protected static string $resource = DepartmentResource::class;
+
+    private function afterCreate(): void
+    {
+        $department = $this->record;
+        $managerId = $department->manager->id;
+        $department->users()->syncWithoutDetaching([$managerId]);
+    }
 }
