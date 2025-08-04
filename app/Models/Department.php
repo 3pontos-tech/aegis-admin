@@ -10,12 +10,14 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 #[UsePolicy(DepartmentPolicy::class)]
 final class Department extends Model
 {
     use HasFactory;
     use HasUuids;
+
     protected $fillable = [
         'name',
         'budget',
@@ -31,5 +33,10 @@ final class Department extends Model
     public function manager(): BelongsTo
     {
         return $this->belongsTo(User::class, 'manager_id');
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'department_user', 'department_id', 'user_id');
     }
 }
