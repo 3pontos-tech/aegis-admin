@@ -6,7 +6,6 @@ namespace App\Models;
 
 use App\Policies\DepartmentPolicy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +15,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 final class Department extends Model
 {
     use HasFactory;
-    use HasUuids;
 
     protected $fillable = [
         'name',

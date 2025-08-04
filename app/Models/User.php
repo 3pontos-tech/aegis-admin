@@ -8,7 +8,6 @@ use App\Policies\UserPolicy;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -19,7 +18,6 @@ use Illuminate\Notifications\Notifiable;
 final class User extends Authenticatable implements FilamentUser
 {
     use HasFactory;
-    use HasUuids;
     use Notifiable;
 
     /**
@@ -32,6 +30,7 @@ final class User extends Authenticatable implements FilamentUser
         'email',
         'password',
         'email_verified_at',
+        'department_id',
     ];
 
     /**
@@ -49,7 +48,7 @@ final class User extends Authenticatable implements FilamentUser
         return true;
     }
 
-    public function managedDepartment(): HasOne|self
+    public function managedDepartment(): HasOne
     {
         return $this->hasOne(Department::class, 'manager_id');
     }
