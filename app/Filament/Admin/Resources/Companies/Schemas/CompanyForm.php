@@ -14,9 +14,11 @@ final class CompanyForm
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->required(),
+                    ->required()
+                    ->maxLength(255),
                 TextInput::make('slug')
-                    ->required(),
+                    ->required()
+                    ->unique(),
             ]);
     }
 }
