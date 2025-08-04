@@ -15,3 +15,7 @@ beforeEach(function (): void {
 test('name input is required', function (): void {
     expect($this->nameInput->isRequired())->toBeTrue();
 });
+
+test('name input has max length 255 at default', function (): void {
+    expect($this->nameInput->getMaxLength())->toBe(255);
+});
