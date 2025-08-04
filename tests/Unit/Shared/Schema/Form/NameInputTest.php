@@ -19,3 +19,7 @@ test('name input is required', function (): void {
 test('name input has max length 255 at default', function (): void {
     expect($this->nameInput->getMaxLength())->toBe(255);
 });
+
+test('default placeholder', function (): void {
+    expect($this->nameInput->getplaceholder())->toBe('Enter your name');
+});
