@@ -12,12 +12,15 @@ use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Livewire\livewire;
 
-it('should create a report', function (): void {
-    $user = User::factory()->createOne();
-    $company = Company::factory()->createOne();
-    $user->company()->associate($company);
+beforeEach(function (): void {
+    $this->user = User::factory()->createOne();
+    $this->company = Company::factory()->createOne();
+    $this->user->company()->associate($this->company);
 
-    actingAs($user);
+    actingAs($this->user);
+});
+
+it('should create a report', function (): void {
     livewire(CreateReport::class)
         ->fillForm([
             'title' => 'report title',
@@ -31,7 +34,49 @@ it('should create a report', function (): void {
         'title' => 'report title',
         'description' => 'report description',
         'status' => ReportStatus::Draft,
-        'company_id' => $company->getKey(),
-        'user_id' => $user->getKey(),
+        'company_id' => $this->company->getKey(),
+        'user_id' => $this->user->getKey(),
+    ]);
+});
+
+describe('validation::tests', function (): void {
+
+    test('title::validations', function ($value, $rule): void {
+
+        livewire(CreateReport::class)
+            ->fillForm([
+                'title' => $value,
+            ])
+            ->call('create')
+            ->assertHasFormErrors(['title' => $rule]);
+    })->with([
+        'required' => ['', 'The title field is required.'],
+        'max:255' => [str_repeat('a', 256), 'The title field must not be greater than 255 characters.'],
+    ]);
+
+    test('description::validations', function ($value, $rule): void {
+
+        livewire(CreateReport::class)
+            ->fillForm([
+                'description' => $value,
+            ])
+            ->call('create')
+            ->assertHasFormErrors(['description' => $rule]);
+    })->with([
+        'required' => ['', 'The description field is required.'],
+        'max:255' => [str_repeat('a', 256), 'The description field must not be greater than 255 characters.'],
+    ]);
+
+    test('status::validations', function ($value, $rule): void {
+
+        livewire(CreateReport::class)
+            ->fillForm([
+                'status' => $value,
+            ])
+            ->call('create')
+            ->assertHasFormErrors(['status' => $rule]);
+    })->with([
+        'required' => ['', 'The status field is required.'],
+        'enum' => ['not-valid', 'The selected status is invalid.'],
     ]);
 });

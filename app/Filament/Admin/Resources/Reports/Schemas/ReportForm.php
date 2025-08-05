@@ -16,9 +16,11 @@ final class ReportForm
         return $schema
             ->components([
                 TextInput::make('title')
-                    ->required(),
+                    ->required()
+                    ->maxLength(255),
                 TextInput::make('description')
-                    ->required(),
+                    ->required()
+                    ->maxLength(255),
                 Select::make('status')
                     ->options(fn (string $operation): array => $operation === 'create'
                         ? [
