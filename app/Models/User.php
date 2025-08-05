@@ -9,7 +9,9 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -29,6 +31,7 @@ final class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'company_id',
         'email_verified_at',
         'department_id',
     ];
@@ -48,6 +51,11 @@ final class User extends Authenticatable implements FilamentUser
         return true;
     }
 
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
+    }
+
     public function managedDepartment(): HasOne
     {
         return $this->hasOne(Department::class, 'manager_id');
@@ -56,6 +64,11 @@ final class User extends Authenticatable implements FilamentUser
     public function departments(): BelongsToMany
     {
         return $this->belongsToMany(Department::class, 'department_user', 'user_id', 'department_id');
+    }
+
+    public function reports(): HasMany
+    {
+        return $this->hasmany(Report::class, 'user_id');
     }
 
     /**
