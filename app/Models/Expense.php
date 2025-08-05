@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\ReportStatus;
-use App\Policies\ReportPolicy;
+use App\Policies\ExpensePolicy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[UsePolicy(ReportPolicy::class)]
-final class Report extends Model
+#[UsePolicy(ExpensePolicy::class)]
+final class Expense extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'title',
+        'amount',
+        'date',
         'description',
-        'status',
-        'submitted_at',
+        'receipt_path',
         'company_id',
         'user_id',
+        'report_id',
+        'category_id',
     ];
 
     public function company(): BelongsTo
@@ -36,16 +36,20 @@ final class Report extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function expenses(): HasMany
+    public function report(): BelongsTo
     {
-        return $this->hasMany(Expense::class);
+        return $this->belongsTo(Report::class);
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 
     protected function casts(): array
     {
         return [
-            'submitted_at' => 'datetime',
-            'status' => ReportStatus::class,
+            'date' => 'datetime',
         ];
     }
 }

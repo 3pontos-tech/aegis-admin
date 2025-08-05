@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 use App\Enums\ReportStatus;
 use App\Filament\Admin\Resources\Reports\Pages\CreateReport;
+use App\Models\Category;
 use App\Models\Company;
 use App\Models\Report;
 use App\Models\User;
+use Filament\Forms\Components\Repeater;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
@@ -21,11 +23,24 @@ beforeEach(function (): void {
 });
 
 it('should create a report', function (): void {
+    Repeater::fake();
+    $category = Category::factory()->for($this->company)->createOne();
     livewire(CreateReport::class)
         ->fillForm([
             'title' => 'report title',
             'description' => 'report description',
             'status' => ReportStatus::Draft,
+            'expenses' => [
+                [
+                    'amount' => 150,
+                    'date' => now()->format('Y-m-d H:i:s'),
+                    'description' => 'Almoço com cliente',
+                    'receipt_path' => 'comprovantes/almoco.pdf',
+                    'company_id' => $this->company->getKey(),
+                    'user_id' => $this->user->getKey(),
+                    'category_id' => $category->getKey(),
+                ],
+            ],
         ])
         ->call('create')
         ->assertHasNoErrors();
