@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\ReportStatus;
 use App\Models\Company;
 use App\Models\Report;
 use App\Models\User;
@@ -19,7 +20,7 @@ final class ReportFactory extends Factory
         return [
             'title' => $this->faker->word(),
             'description' => $this->faker->text(),
-            'status' => $this->faker->word(),
+            'status' => $this->faker->randomElement(ReportStatus::cases()),
             'submitted_at' => Carbon::now(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
