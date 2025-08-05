@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Categories\Schemas;
 
+use App\Filament\Shared\Schemas\Form\NameInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -14,8 +15,7 @@ final class CategoryForm
     {
         return $schema
             ->components([
-                TextInput::make('name')
-                    ->required(),
+                NameInput::make(),
                 TextInput::make('description')
                     ->required(),
                 Select::make('company_id')

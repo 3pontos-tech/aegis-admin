@@ -20,7 +20,7 @@ final class ReportForm
                 TextInput::make('description')
                     ->required(),
                 Select::make('status')
-                    ->options(fn(string $operation): array => $operation === 'create'
+                    ->options(fn (string $operation): array => $operation === 'create'
                         ? [
                             'draft' => ReportStatus::Draft->value,
                         ]
