@@ -20,7 +20,7 @@ final class Company extends Model
         'slug',
     ];
 
-    public function users(): self
+    public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }
