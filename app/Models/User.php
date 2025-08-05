@@ -68,7 +68,12 @@ final class User extends Authenticatable implements FilamentUser
 
     public function reports(): HasMany
     {
-        return $this->hasmany(Report::class, 'user_id');
+        return $this->hasmany(Report::class);
+    }
+
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class);
     }
 
     /**

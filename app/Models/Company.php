@@ -20,7 +20,7 @@ final class Company extends Model
         'slug',
     ];
 
-    public function users(): self
+    public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }
@@ -28,5 +28,20 @@ final class Company extends Model
     public function reports(): HasMany
     {
         return $this->hasMany(Report::class);
+    }
+
+    public function departments(): HasMany
+    {
+        return $this->hasmany(Department::class);
+    }
+
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class);
+    }
+
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class);
     }
 }
