@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Reports;
 
+use App\Filament\Admin\Resources\Reports\Pages\ApproveReport;
 use App\Filament\Admin\Resources\Reports\Pages\CreateReport;
 use App\Filament\Admin\Resources\Reports\Pages\EditReport;
 use App\Filament\Admin\Resources\Reports\Pages\ListReports;
@@ -48,6 +49,7 @@ final class ReportResource extends Resource
             'index' => ListReports::route('/'),
             'create' => CreateReport::route('/create'),
             'edit' => EditReport::route('/{record}/edit'),
+            'approve-report' => ApproveReport::route('/{record}/approve'),
         ];
     }
 }

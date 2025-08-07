@@ -22,7 +22,7 @@ final class ExpenseFactory extends Factory
             'amount' => $this->faker->word(),
             'date' => Carbon::now(),
             'description' => $this->faker->text(),
-            'receipt_path' => $this->faker->word(),
+            'receipt_path' => $this->faker->image(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 

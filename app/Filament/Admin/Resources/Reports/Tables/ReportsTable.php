@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Reports\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -45,6 +46,8 @@ final class ReportsTable
             ])
             ->recordActions([
                 EditAction::make(),
+                Action::make('Aprove')
+                    ->url(fn ($record) => route('filament.admin.resources.reports.approve-report', $record)),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
