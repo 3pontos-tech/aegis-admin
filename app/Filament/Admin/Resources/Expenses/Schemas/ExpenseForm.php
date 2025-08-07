@@ -21,10 +21,9 @@ final class ExpenseForm
                 DateTimePicker::make('date')
                     ->required(),
                 TextInput::make('description')
-                    ->required(),
+                    ->required()
+                    ->maxLength(255),
                 TextInput::make('receipt_path')
-                    ->required(),
-                TextInput::make('status')
                     ->required(),
                 Select::make('company_id')
                     ->relationship('company', 'name')
