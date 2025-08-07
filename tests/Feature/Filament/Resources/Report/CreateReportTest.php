@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Storage;
 use App\Enums\ReportStatus;
 use App\Filament\Admin\Resources\Reports\Pages\CreateReport;
 use App\Models\Category;
@@ -9,6 +10,7 @@ use App\Models\Company;
 use App\Models\Report;
 use App\Models\User;
 use Filament\Forms\Components\Repeater;
+use Illuminate\Http\UploadedFile;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
@@ -24,6 +26,8 @@ beforeEach(function (): void {
 
 it('should create a report', function (): void {
     Repeater::fake();
+    Storage::fake('public');
+    $image = UploadedFile::fake()->image('image.jpg');
     $category = Category::factory()->for($this->company)->createOne();
     livewire(CreateReport::class)
         ->fillForm([
@@ -35,7 +39,7 @@ it('should create a report', function (): void {
                     'amount' => 150,
                     'date' => now()->format('Y-m-d H:i:s'),
                     'description' => 'Almoço com cliente',
-                    'receipt_path' => 'comprovantes/almoco.pdf',
+                    'receipt_path' => $image,
                     'company_id' => $this->company->getKey(),
                     'user_id' => $this->user->getKey(),
                     'category_id' => $category->getKey(),

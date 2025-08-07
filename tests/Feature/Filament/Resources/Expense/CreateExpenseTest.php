@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Storage;
 use App\Filament\Admin\Resources\Expenses\Pages\CreateExpense;
 use App\Models\Category;
 use App\Models\Company;
 use App\Models\Report;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Livewire\livewire;
@@ -25,6 +27,8 @@ beforeEach(function (): void {
 });
 
 it('should be able create to create an expense', function (): void {
+    Storage::fake('public');
+    $image = UploadedFile::fake()->image('image.jpg');
 
     livewire(CreateExpense::class)
         ->assertOk()
@@ -32,7 +36,7 @@ it('should be able create to create an expense', function (): void {
             'amount' => 10000,
             'date' => now(),
             'description' => 'description for expense',
-            'receipt_path' => 'arrumar.pdf',
+            'receipt_path' => $image,
             'company_id' => $this->company->getKey(),
             'category_id' => $this->category->getKey(),
             'report_id' => $this->report->getKey(),
@@ -71,19 +75,6 @@ describe('validation::tests', function (): void {
     })->with([
         'required' => ['', 'The amount field is required.'],
         'numeric' => ['NaN', 'The amount field must be a number.'],
-    ]);
-
-    test('date::validation', function ($value, $rule): void {
-
-        livewire(CreateExpense::class)
-            ->assertOk()
-            ->fillForm([
-                'date' => $value,
-            ])
-            ->call('create')
-            ->assertHasFormErrors(['date' => $rule]);
-    })->with([
-        'required' => ['', 'The date field is required.'],
     ]);
 
     test('date::validation', function ($value, $rule): void {

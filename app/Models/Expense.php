@@ -50,6 +50,7 @@ final class Expense extends Model
     {
         return [
             'date' => 'datetime',
+            'receipt_path' => 'array',
         ];
     }
 }

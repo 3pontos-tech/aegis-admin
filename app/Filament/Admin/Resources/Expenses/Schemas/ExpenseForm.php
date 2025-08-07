@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Expenses\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -23,7 +24,10 @@ final class ExpenseForm
                 TextInput::make('description')
                     ->required()
                     ->maxLength(255),
-                TextInput::make('receipt_path')
+                FileUpload::make('receipt_path')
+                    ->label('Receipt Image')
+                    ->image()
+                    ->multiple()
                     ->required(),
                 Select::make('company_id')
                     ->relationship('company', 'name')

@@ -6,6 +6,7 @@ namespace App\Filament\Admin\Resources\Reports\Schemas;
 
 use App\Enums\ReportStatus;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -58,8 +59,10 @@ final class ReportForm
                                             ->label('Description')
                                             ->required(),
 
-                                        TextInput::make('receipt_path')
-                                            ->label('Receipt Path')
+                                        FileUpload::make('receipt_path')
+                                            ->label('Receipt')
+                                            ->multiple()
+                                            ->image()
                                             ->required(),
 
                                         Select::make('company_id')
