@@ -28,7 +28,8 @@ final class ApprovalsTable
                 TextColumn::make('level')
                     ->searchable(),
                 TextColumn::make('status')
-                    ->searchable(),
+                    ->searchable()
+                    ->badge(),
                 TextColumn::make('comments')
                     ->searchable(),
                 TextColumn::make('approved_at')

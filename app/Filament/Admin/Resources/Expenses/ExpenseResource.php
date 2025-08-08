@@ -21,7 +21,7 @@ final class ExpenseResource extends Resource
 {
     protected static ?string $model = Expense::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::CreditCard;
 
     protected static string|null|UnitEnum $navigationGroup = 'Financial';
 
