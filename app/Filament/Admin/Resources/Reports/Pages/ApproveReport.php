@@ -9,6 +9,7 @@ use App\Filament\Admin\Resources\Reports\ReportResource;
 use App\Models\Approval;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
@@ -38,10 +39,11 @@ final class ApproveReport extends Page implements HasSchemas
     public function save(): void
     {
         $data = $this->form->getState();
+        $reportId = $this->record->getKey();
 
         Approval::query()->create([
             'company_id' => auth()->user()->company_id,
-            'report_id' => $this->record->getKey(),
+            'report_id' => $reportId,
             'approver_id' => auth()->user()->id,
             'status' => $data['status'],
             'level' => 'manager',
@@ -49,7 +51,11 @@ final class ApproveReport extends Page implements HasSchemas
             'approved_at' => now(),
         ]);
 
-        // notify user $this->record->user
+        Notification::make()
+            ->title(sprintf('Your report %s status was %s', $reportId, $data['status']->value))
+            ->sendToDatabase($this->record->user);
+
+        redirect()->route('filament.admin.resources.approvals.index');
     }
 
     public function setTitle(): void
