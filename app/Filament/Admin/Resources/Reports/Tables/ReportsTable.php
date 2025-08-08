@@ -46,7 +46,7 @@ final class ReportsTable
             ])
             ->recordActions([
                 EditAction::make(),
-                Action::make('Aprove')
+                Action::make('Approve')
                     ->url(fn ($record) => route('filament.admin.resources.reports.approve-report', $record)),
             ])
             ->toolbarActions([
