@@ -13,19 +13,29 @@ use App\Models\User;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Livewire\livewire;
+use function PHPUnit\Framework\assertStringContainsString;
+
+beforeEach(function (): void {
+    $this->company = Company::factory()->create();
+    $this->userReporter = User::factory()
+        ->has(Report::factory())
+        ->createOne();
+    $this->userReporter->company()->associate($this->company);
+    $this->userApprover = User::factory()->createOne();
+    $this->userApprover->company()->associate($this->company);
+    $this->report = Report::factory()->for($this->userReporter)->create();
+    $this->company->reports()->save($this->report);
+    Expense::factory()->count(2)->for($this->report)->create();
+
+    actingAs($this->userApprover);
+});
 
 it('loads the information at the ApproveReportPage', function (): void {
-    $reporter = User::factory()->create();
-    $approver = User::factory()->create();
-    $report = Report::factory()->for($reporter)->create();
-    Expense::factory()->count(2)->for($report)->create();
 
-    actingAs($approver);
-
-    $component = livewire(ApproveReport::class, ['record' => $report->getKey()])
+    $component = livewire(ApproveReport::class, ['record' => $this->report->getKey()])
         ->assertOk();
 
-    $report->expenses()->each(function (Expense $expense) use ($component): void {
+    $this->report->expenses()->each(function (Expense $expense) use ($component): void {
         $component->assertSee($expense->date->format('d/m/y'));
         $component->assertSee($expense->amount);
         $component->assertSee($expense->description);
@@ -34,20 +44,7 @@ it('loads the information at the ApproveReportPage', function (): void {
 });
 
 test('should be able to approve or reject a report', function ($value): void {
-    $company = Company::factory()->create();
-    $userReporter = User::factory()
-        ->has(Report::factory())
-        ->createOne();
-    $userReporter->company()->associate($company);
-    $userApprover = User::factory()->createOne();
-    $userApprover->company()->associate($company);
-    $report = Report::factory()->for($userReporter)->create();
-    $company->reports()->save($report);
-    Expense::factory()->count(2)->for($report)->create();
-
-    actingAs($userApprover);
-
-    livewire(ApproveReport::class, ['record' => $report->getKey()])
+    livewire(ApproveReport::class, ['record' => $this->report->getKey()])
         ->assertOk()
         ->set([
             'data' => [
@@ -61,10 +58,32 @@ test('should be able to approve or reject a report', function ($value): void {
     assertDatabaseHas(Approval::class, [
         'status' => $value,
         'comments' => 'we cant pay for this',
-        'company_id' => $report->company->getKey(),
-        'report_id' => $report->getKey(),
-        'approver_id' => $userApprover->getKey(),
+        'company_id' => $this->report->company->getKey(),
+        'report_id' => $this->report->getKey(),
+        'approver_id' => $this->userApprover->getKey(),
     ]);
+})->with([
+    ApprovalStatus::Rejected,
+    ApprovalStatus::Approved,
+]);
+
+it('should notify user that approval status was changed', function ($value): void {
+    livewire(ApproveReport::class, ['record' => $this->report->getKey()])
+        ->assertOk()
+        ->set([
+            'data' => [
+                'status' => $value,
+                'comments' => 'we cant pay for this',
+            ],
+        ])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    $notification = $this->userReporter->notifications()->latest()->first();
+    assertStringContainsString(
+        sprintf('Your report %s status was ', $this->report->id).$value->value,
+        $notification->data['title']
+    );
 })->with([
     ApprovalStatus::Rejected,
     ApprovalStatus::Approved,
