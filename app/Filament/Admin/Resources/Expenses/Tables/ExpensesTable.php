@@ -26,8 +26,6 @@ final class ExpensesTable
                     ->searchable(),
                 TextColumn::make('receipt_path')
                     ->searchable(),
-                TextColumn::make('status')
-                    ->searchable(),
                 TextColumn::make('company.name')
                     ->numeric()
                     ->sortable(),

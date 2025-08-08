@@ -31,4 +31,18 @@ final class ApprovalFactory extends Factory
             'approver_id' => User::factory(),
         ];
     }
+
+    public function approved(): self
+    {
+        return $this->state(fn(array $attributes): array => [
+            'status' => ApprovalStatus::Approved,
+        ]);
+    }
+
+    public function rejected(): self
+    {
+        return $this->state(fn(array $attributes): array => [
+            'status' => ApprovalStatus::Rejected,
+        ]);
+    }
 }
