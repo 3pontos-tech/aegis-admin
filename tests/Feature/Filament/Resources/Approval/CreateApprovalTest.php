@@ -25,8 +25,6 @@ it('should be able to approve a Report', function (): void {
 
     actingAs($userApprover);
 
-    $approved_at = now();
-
     livewire(CreateApproval::class)
         ->fillForm([
             'company_id' => $company->getKey(),
@@ -34,7 +32,6 @@ it('should be able to approve a Report', function (): void {
             'level' => 'level-3',
             'status' => ApprovalStatus::Approved,
             'comments' => 'ok homie',
-            'approved_at' => $approved_at,
         ])
         ->call('create')
         ->assertHasNoFormErrors();
@@ -47,7 +44,5 @@ it('should be able to approve a Report', function (): void {
         'approver_id' => $userApprover->getKey(),
         'status' => ApprovalStatus::Approved,
         'comments' => 'ok homie',
-        'approved_at' => $approved_at,
     ]);
-
 });
