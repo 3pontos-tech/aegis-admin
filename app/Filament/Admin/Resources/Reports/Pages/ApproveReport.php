@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Reports\Pages;
 
+use App\Actions\Approval\CreateApprovalAction;
+use App\DTOs\ApprovalDTO;
 use App\Enums\ApprovalStatus;
 use App\Filament\Admin\Resources\Reports\ReportResource;
-use App\Models\Approval;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -36,20 +37,20 @@ final class ApproveReport extends Page implements HasSchemas
         $this->setTitle();
     }
 
-    public function save(): void
+    public function save(CreateApprovalAction $action): void
     {
         $data = $this->form->getState();
         $reportId = $this->record->getKey();
 
-        Approval::query()->create([
-            'company_id' => auth()->user()->company_id,
-            'report_id' => $reportId,
-            'approver_id' => auth()->user()->id,
-            'status' => $data['status'],
-            'level' => 'manager',
-            'comments' => $data['comments'],
-            'approved_at' => now(),
-        ]);
+        $action->execute(
+            ApprovalDTO::make(
+                companyId: auth()->user()->company_id,
+                reportId: $reportId,
+                approverId: auth()->user()->id,
+                status: $data['status'],
+                comments: $data['comments'],
+            )
+        );
 
         Notification::make()
             ->title(sprintf('Your report %s status was %s', $reportId, $data['status']->value))
