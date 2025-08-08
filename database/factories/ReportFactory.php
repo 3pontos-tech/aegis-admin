@@ -29,4 +29,39 @@ final class ReportFactory extends Factory
             'user_id' => User::factory(),
         ];
     }
+
+    public function approved(): self
+    {
+        return $this->state(fn(array $attributes): array => [
+            'status' => ReportStatus::Approved,
+        ]);
+    }
+
+    public function rejected(): self
+    {
+        return $this->state(fn(array $attributes): array => [
+            'status' => ReportStatus::Rejected,
+        ]);
+    }
+
+    public function reimbursed(): self
+    {
+        return $this->state(fn(array $attributes): array => [
+            'status' => ReportStatus::Reimbursed,
+        ]);
+    }
+
+    public function draft(): self
+    {
+        return $this->state(fn(array $attributes): array => [
+            'status' => ReportStatus::Draft,
+        ]);
+    }
+
+    public function submitted(): self
+    {
+        return $this->state(fn(array $attributes): array => [
+            'status' => ReportStatus::Submitted,
+        ]);
+    }
 }

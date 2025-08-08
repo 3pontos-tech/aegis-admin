@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\ApprovalStatus;
+use App\Enums\ReportStatus;
 use App\Filament\Admin\Resources\Reports\Pages\ApproveReport;
 use App\Models\Approval;
 use App\Models\Company;
@@ -23,7 +24,7 @@ beforeEach(function (): void {
     $this->userReporter->company()->associate($this->company);
     $this->userApprover = User::factory()->createOne();
     $this->userApprover->company()->associate($this->company);
-    $this->report = Report::factory()->for($this->userReporter)->create();
+    $this->report = Report::factory()->for($this->userReporter)->submitted()->create();
     $this->company->reports()->save($this->report);
     Expense::factory()->count(2)->for($this->report)->create();
 
@@ -87,4 +88,26 @@ it('should notify user that approval status was changed', function ($value): voi
 })->with([
     ApprovalStatus::Rejected,
     ApprovalStatus::Approved,
+]);
+
+test('should update report status after creating the approval', function ($approvalStatus, $reportStatus): void {
+
+    livewire(ApproveReport::class, ['record' => $this->report->getKey()])
+        ->assertOk()
+        ->set([
+            'data' => [
+                'status' => $approvalStatus,
+                'comments' => 'we cant pay for this',
+            ],
+        ])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    $this->report->refresh();
+
+    expect($this->report->status)->toBe($reportStatus);
+
+})->with([
+    [ApprovalStatus::Approved, ReportStatus::Approved],
+    [ApprovalStatus::Rejected, ReportStatus::Rejected],
 ]);
