@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description');
-            $table->foreignIdFor(Company::class);
+            $table->foreignIdFor(Company::class)->constrained('companies');
             $table->timestamps();
         });
     }

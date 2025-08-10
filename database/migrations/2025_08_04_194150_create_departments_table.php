@@ -16,8 +16,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->decimal('budget', 12, 2);
-            $table->foreignIdFor(Company::class);
-            $table->foreignIdFor(User::class, 'manager_id');
+            $table->foreignIdFor(Company::class)->constrained('companies');
+            $table->foreignIdFor(User::class, 'manager_id')->constrained('users');
             $table->timestamps();
         });
     }

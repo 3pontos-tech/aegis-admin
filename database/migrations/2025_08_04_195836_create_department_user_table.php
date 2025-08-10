@@ -14,8 +14,8 @@ return new class extends Migration
     {
         Schema::create('department_user', function (Blueprint $table): void {
             $table->id();
-            $table->foreignIdFor(Department::class, 'department_id');
-            $table->foreignIdFor(User::class, 'user_id');
+            $table->foreignIdFor(Department::class, 'department_id')->constrained('departments');
+            $table->foreignIdFor(User::class, 'user_id')->constrained('users');
             $table->timestamps();
             $table->unique(['department_id', 'user_id']);
         });

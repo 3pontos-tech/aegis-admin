@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('description');
             $table->string('status')->comment("'draft, submitted, approved, rejected, reimbursed'");
             $table->dateTime('submitted_at');
-            $table->foreignIdFor(Company::class);
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(Company::class)->constrained('companies');
+            $table->foreignIdFor(User::class)->constrained('users');
             $table->timestamps();
         });
     }
