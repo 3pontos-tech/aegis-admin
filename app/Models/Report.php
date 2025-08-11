@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[UsePolicy(ReportPolicy::class)]
 final class Report extends Model
@@ -39,6 +40,11 @@ final class Report extends Model
     public function expenses(): HasMany
     {
         return $this->hasMany(Expense::class);
+    }
+
+    public function reimbursement(): HasOne
+    {
+        return $this->hasOne(Reimbursement::class);
     }
 
     protected function casts(): array

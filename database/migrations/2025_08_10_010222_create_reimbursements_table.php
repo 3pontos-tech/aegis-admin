@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('amount', 10, 2);
             $table->string('status');
             $table->string('payment_method');
-            $table->string('payment_date')->nullable();
+            $table->date('payment_date')->nullable();
             $table->string('reference');
             $table->timestamps();
         });

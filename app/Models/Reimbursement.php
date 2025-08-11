@@ -24,7 +24,7 @@ final class Reimbursement extends Model
     ];
 
     protected $casts = [
-        'reference' => ReimbursementStatus::class,
+        'status' => ReimbursementStatus::class,
         'payment_date' => 'datetime',
     ];
 
