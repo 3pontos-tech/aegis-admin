@@ -102,3 +102,27 @@ it('load only reports that does not have an reimbursement associated', function 
             'report_id' => $this->report->name,
         ]);
 });
+
+test('only reports that belongs to the company can be loaded', function (): void {
+    $report = Report::factory()->create();
+    livewire(CreateReimbursement::class)
+        ->assertOk()
+        ->fillForm([
+            'company_id' => $report->company->getKey(),
+        ])
+        ->assertSchemaStateSet([
+            'report_id' => $report->name,
+        ]);
+
+    livewire(CreateReimbursement::class)
+        ->assertOk()
+        ->fillForm([
+            'company_id' => $this->company->id,
+        ])
+        ->assertSchemaStateSet(function (array $state) use ($report): void {
+            expect($state['report_id'])
+                ->not->toBe($report->id);
+        });
+
+    expect($report->company->getKey())->not->toBe($this->company->id);
+});
