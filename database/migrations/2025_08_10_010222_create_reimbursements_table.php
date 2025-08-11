@@ -16,10 +16,10 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Company::class)->constrained('companies');
             $table->foreignIdFor(Report::class)->constrained('reports');
-            $table->decimal('amount');
+            $table->decimal('amount', 10, 2);
             $table->string('status');
             $table->string('payment_method');
-            $table->string('payment_date');
+            $table->string('payment_date')->nullable();
             $table->string('reference');
             $table->timestamps();
         });

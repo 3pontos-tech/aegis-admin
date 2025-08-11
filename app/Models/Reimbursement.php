@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\ReimbursementStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,6 +21,11 @@ final class Reimbursement extends Model
         'payment_method',
         'payment_date',
         'reference',
+    ];
+
+    protected $casts = [
+        'reference' => ReimbursementStatus::class,
+        'payment_date' => 'datetime',
     ];
 
     public function company(): BelongsTo
