@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Expenses\Schemas;
 
+use App\Enums\ReportStatus;
+use App\Filament\Shared\Schemas\Form\CompanyDependentSelect;
+use App\Models\Category;
+use App\Models\Report;
+use App\Models\User;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -32,14 +37,15 @@ final class ExpenseForm
                 Select::make('company_id')
                     ->relationship('company', 'name')
                     ->required(),
-                Select::make('user_id')
-                    ->relationship('user', 'name')
+                CompanyDependentSelect::make('user_id', User::class, 'name')
+                    ->label('User')
                     ->required(),
-                Select::make('report_id')
-                    ->relationship('report', 'title')
+                CompanyDependentSelect::make('report_id', Report::class, 'title', 'status', ReportStatus::Submitted->value)
+                    ->label('Report')
                     ->required(),
-                Select::make('category_id')
-                    ->relationship('category', 'name')
+
+                CompanyDependentSelect::make('category_id', Category::class, 'name')
+                    ->label('Category')
                     ->required(),
             ]);
     }

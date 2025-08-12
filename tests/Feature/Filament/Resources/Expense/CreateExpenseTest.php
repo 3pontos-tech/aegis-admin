@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Storage;
+use App\Enums\ReportStatus;
 use App\Filament\Admin\Resources\Expenses\Pages\CreateExpense;
 use App\Models\Category;
 use App\Models\Company;
 use App\Models\Report;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Livewire\livewire;
@@ -17,11 +18,14 @@ beforeEach(function (): void {
     $this->user = User::factory()->createOne();
     $this->company = Company::factory()->createOne();
     $this->user->company()->associate($this->company);
+    $this->company->users()->save($this->user);
     $this->category = Category::factory()->for($this->company)->createOne();
     $this->report = Report::factory()
         ->for($this->company)
         ->for($this->user)
+        ->submitted()
         ->createOne();
+    $this->company->reports()->save($this->report);
 
     actingAs($this->user);
 });
@@ -29,7 +33,6 @@ beforeEach(function (): void {
 it('should be able create to create an expense', function (): void {
     Storage::fake('public');
     $image = UploadedFile::fake()->image('image.jpg');
-
     livewire(CreateExpense::class)
         ->assertOk()
         ->fillForm([
@@ -46,6 +49,26 @@ it('should be able create to create an expense', function (): void {
         ->assertHasNoFormErrors();
 
     expect($this->user->expenses()->count())->toBeOne(1);
+});
+
+test('report status must be submitted to create an expense', function (): void {
+    Storage::fake('public');
+    $image = UploadedFile::fake()->image('image.jpg');
+    $this->report->update(['status' => ReportStatus::Draft]);
+    livewire(CreateExpense::class)
+        ->assertOk()
+        ->fillForm([
+            'amount' => 10000,
+            'date' => now(),
+            'description' => 'description for expense',
+            'receipt_path' => $image,
+            'company_id' => $this->company->getKey(),
+            'category_id' => $this->category->getKey(),
+            'report_id' => $this->report->getKey(),
+            'user_id' => $this->user->getKey(),
+        ])
+        ->call('create')
+        ->assertHasFormErrors(['report_id']);
 });
 
 describe('validation::tests', function (): void {
