@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\ApprovalStatus;
+use App\Enums\ReportStatus;
 use App\Filament\Admin\Resources\Approvals\Pages\CreateApproval;
 use App\Models\Approval;
 use App\Models\Company;
@@ -14,21 +15,25 @@ use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Livewire\livewire;
 
-it('should be able to approve a Report', function (): void {
-    $company = Company::factory()->create();
-    $userReporter = User::factory()
-        ->has(Report::factory())
+beforeEach(function (): void {
+    $this->company = Company::factory()->create();
+    $this->userReporter = User::factory()
+        ->has(Report::factory()->submitted())
         ->createOne();
-    $userReporter->company()->associate($company);
-    $userApprover = User::factory()->createOne();
-    $userApprover->company()->associate($company);
 
-    actingAs($userApprover);
+    $this->userReporter->company()->associate($this->company);
+    $this->userApprover = User::factory()->createOne();
+    $this->userApprover->company()->associate($this->company);
+    $this->company->reports()->save($this->userReporter->reports()->first());
 
+    actingAs($this->userApprover);
+});
+
+it('should be able to approve a Report', function (): void {
     livewire(CreateApproval::class)
         ->fillForm([
-            'company_id' => $company->getKey(),
-            'report_id' => $userReporter->reports->first()->getKey(),
+            'company_id' => $this->company->getKey(),
+            'report_id' => $this->userReporter->reports->first()->getKey(),
             'level' => 'level-3',
             'status' => ApprovalStatus::Approved,
             'comments' => 'ok homie',
@@ -38,11 +43,31 @@ it('should be able to approve a Report', function (): void {
 
     assertDatabaseCount(Approval::class, 1);
     assertDatabaseHas(Approval::class, [
-        'company_id' => $company->getKey(),
-        'report_id' => $userReporter->reports->first()->getKey(),
+        'company_id' => $this->company->getKey(),
+        'report_id' => $this->userReporter->reports->first()->getKey(),
         'level' => 'level-3',
-        'approver_id' => $userApprover->getKey(),
+        'approver_id' => $this->userApprover->getKey(),
         'status' => ApprovalStatus::Approved,
         'comments' => 'ok homie',
     ]);
 });
+
+test('only submitted report can be loaded ', function ($status): void {
+    $report = $this->userReporter->reports()->first();
+    $report->update(['status' => $status]);
+    livewire(CreateApproval::class)
+        ->fillForm([
+            'company_id' => $this->company->getKey(),
+            'report_id' => $report->getKey(),
+            'level' => 'level-3',
+            'status' => ApprovalStatus::Approved,
+            'comments' => 'ok homie',
+        ])
+        ->call('create')
+        ->assertHasFormErrors(['report_id']);
+})->with([
+    ReportStatus::Approved,
+    ReportStatus::Rejected,
+    ReportStatus::Draft,
+    ReportStatus::Reimbursed,
+]);
