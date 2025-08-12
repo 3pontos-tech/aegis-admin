@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\ReportStatus;
+use App\Observers\ReportObserver;
 use App\Policies\ReportPolicy;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+#[ObservedBy(ReportObserver::class)]
 #[UsePolicy(ReportPolicy::class)]
 final class Report extends Model
 {

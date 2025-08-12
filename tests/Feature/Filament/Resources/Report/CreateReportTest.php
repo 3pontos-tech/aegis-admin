@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Storage;
 use App\Enums\ReportStatus;
 use App\Filament\Admin\Resources\Reports\Pages\CreateReport;
 use App\Models\Category;
@@ -11,6 +10,7 @@ use App\Models\Report;
 use App\Models\User;
 use Filament\Forms\Components\Repeater;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
@@ -20,7 +20,6 @@ beforeEach(function (): void {
     $this->user = User::factory()->createOne();
     $this->company = Company::factory()->createOne();
     $this->user->company()->associate($this->company);
-
     actingAs($this->user);
 });
 
@@ -31,6 +30,7 @@ it('should create a report', function (): void {
     $category = Category::factory()->for($this->company)->createOne();
     livewire(CreateReport::class)
         ->fillForm([
+            'company_id' => $this->company->getKey(),
             'title' => 'report title',
             'description' => 'report description',
             'status' => ReportStatus::Draft,
@@ -47,7 +47,7 @@ it('should create a report', function (): void {
             ],
         ])
         ->call('create')
-        ->assertHasNoErrors();
+        ->assertHasNoFormErrors();
 
     assertDatabaseHas(Report::class, [
         'title' => 'report title',
@@ -84,18 +84,5 @@ describe('validation::tests', function (): void {
     })->with([
         'required' => ['', 'The description field is required.'],
         'max:255' => [str_repeat('a', 256), 'The description field must not be greater than 255 characters.'],
-    ]);
-
-    test('status::validations', function ($value, $rule): void {
-
-        livewire(CreateReport::class)
-            ->fillForm([
-                'status' => $value,
-            ])
-            ->call('create')
-            ->assertHasFormErrors(['status' => $rule]);
-    })->with([
-        'required' => ['', 'The status field is required.'],
-        'enum' => ['not-valid', 'The selected status is invalid.'],
     ]);
 });

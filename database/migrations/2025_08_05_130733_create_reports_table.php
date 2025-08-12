@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('description');
             $table->string('status')->comment("'draft, submitted, approved, rejected, reimbursed'");
-            $table->dateTime('submitted_at');
+            $table->dateTime('submitted_at')->nullable();
             $table->foreignIdFor(Company::class)->constrained('companies');
             $table->foreignIdFor(User::class)->constrained('users');
             $table->timestamps();

@@ -13,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 
 final class ReportForm
 {
@@ -30,21 +31,25 @@ final class ReportForm
                                 TextInput::make('description')
                                     ->required()
                                     ->maxLength(255),
+
+                                Select::make('company_id')
+                                    ->label('Company')
+                                    ->preload()
+                                    ->relationship('company', 'name')
+                                    ->required(),
+
                                 Select::make('status')
-                                    ->options(fn (string $operation): array => $operation === 'create'
-                                        ? [
-                                            'draft' => ReportStatus::Draft->value,
-                                        ]
-                                        : [
-                                            'draft' => ReportStatus::Draft->value,
-                                            'submitted' => ReportStatus::Submitted->value,
-                                        ])
+                                    ->hidden(fn (string $operation): bool => $operation !== 'edit')
+                                    ->options([
+                                        'submitted' => ReportStatus::Submitted->value,
+                                    ])
+                                    ->enum(ReportStatus::class)
                                     ->required(),
                             ]),
                         Tab::make('Expenses')
                             ->schema([
                                 Repeater::make('expenses')
-                                    ->relationship()
+                                    ->relationship('expenses')
                                     ->schema([
                                         TextInput::make('amount')
                                             ->label('Amount')
@@ -66,13 +71,15 @@ final class ReportForm
                                             ->required(),
 
                                         Select::make('company_id')
-                                            ->label('Company')
                                             ->relationship('company', 'name')
+                                            ->preload()
                                             ->required(),
 
                                         Select::make('user_id')
                                             ->label('User')
-                                            ->relationship('user', 'name')
+                                            ->relationship('user', 'name', function (Builder $query): void {
+                                                $query->where('id', auth()->id());
+                                            })
                                             ->required(),
 
                                         Select::make('category_id')
@@ -80,7 +87,6 @@ final class ReportForm
                                             ->relationship('category', 'name')
                                             ->required(),
                                     ])
-
                                     ->defaultItems(1),
                             ]),
                     ]),
