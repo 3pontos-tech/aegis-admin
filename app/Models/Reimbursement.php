@@ -8,6 +8,7 @@ use App\Enums\ReimbursementStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 final class Reimbursement extends Model
 {
@@ -36,5 +37,17 @@ final class Reimbursement extends Model
     public function report(): BelongsTo
     {
         return $this->belongsTo(Report::class);
+    }
+
+    public function user(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            User::class,
+            Report::class,
+            'user_id',
+            'id',
+            'id',
+            'user_id'
+        );
     }
 }

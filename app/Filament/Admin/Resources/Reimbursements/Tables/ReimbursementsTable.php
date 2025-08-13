@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Reimbursements\Tables;
 
+use App\Enums\ReimbursementStatus;
 use App\Filament\Shared\Schemas\Table\Columns\TimestampsColumns;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 final class ReimbursementsTable
@@ -36,11 +39,27 @@ final class ReimbursementsTable
                     ->searchable(),
                 TextColumn::make('reference')
                     ->searchable(),
+                TextColumn::make('report.user.name')
+                    ->label('Owner')
+                    ->searchable(),
                 ...TimestampsColumns::make(),
             ])
             ->filters([
-                //
-            ])
+                SelectFilter::make('status')
+                    ->options(ReimbursementStatus::class),
+                SelectFilter::make('company')
+                    ->preload()
+                    ->searchable()
+                    ->relationship('company', 'name'),
+
+                SelectFilter::make('user')
+                    ->preload()
+                    ->searchable()
+                    ->relationship('report.user', 'name'),
+
+            ])->filtersFormColumns(3)
+            ->filtersFormWidth(Width::FourExtraLarge)
+            ->persistFiltersInSession()
             ->recordActions([
                 EditAction::make(),
             ])
