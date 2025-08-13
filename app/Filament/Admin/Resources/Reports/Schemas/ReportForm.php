@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Reports\Schemas;
 
 use App\Enums\ReportStatus;
+use App\Models\Category;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -12,8 +13,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
-use Illuminate\Database\Eloquent\Builder;
 
 final class ReportForm
 {
@@ -70,24 +71,35 @@ final class ReportForm
                                             ->image()
                                             ->required(),
 
-                                        Select::make('company_id')
-                                            ->relationship('company', 'name')
-                                            ->preload()
-                                            ->required(),
+                                        TextInput::make('company_id')
+                                            ->required()
+                                            ->hidden(),
 
-                                        Select::make('user_id')
+                                        TextInput::make('user_id')
                                             ->label('User')
-                                            ->relationship('user', 'name', function (Builder $query): void {
-                                                $query->where('id', auth()->id());
-                                            })
+                                            ->hidden()
                                             ->required(),
 
                                         Select::make('category_id')
                                             ->label('Category')
-                                            ->relationship('category', 'name')
+                                            ->options(function (Get $get) {
+                                                if (! $companyId = $get('../../company_id')) {
+                                                    return [];
+                                                }
+
+                                                return Category::query()->where('company_id', $companyId)->pluck('name', 'id')->toArray();
+                                            })
+                                            ->reactive()
+                                            ->searchable()
                                             ->required(),
                                     ])
-                                    ->defaultItems(1),
+                                    ->defaultItems(1)
+                                    ->mutateRelationshipDataBeforeCreateUsing(function (array $data, Get $get) {
+                                        $data['company_id'] = $get('company_id');
+                                        $data['user_id'] = auth()->id();
+
+                                        return $data;
+                                    }),
                             ]),
                     ]),
             ]);
