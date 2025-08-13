@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\ReportStatus;
 use App\Filament\Admin\Resources\Reports\Pages\ListReports;
 use App\Models\Company;
 use App\Models\Report;
@@ -53,4 +54,36 @@ it('should redirect to ApproveReport Page when call the approve action', functio
         ->callAction(TestAction::make('Approve')->table($report))
         ->assertActionHasUrl(TestAction::make('Approve')->table($report),
             route('filament.admin.resources.reports.approve-report', $report));
+});
+
+describe('table filters tests', function (): void {
+
+    test('company filter', function (): void {
+        livewire(ListReports::class)
+            ->assertOk()
+            ->assertTableFilterExists('company')
+            ->filterTable('company', $this->user->company)
+            ->assertCanSeeTableRecords($this->reports)
+            ->assertCanNotSeeTableRecords(Report::factory()->count(5)->create());
+    });
+
+    test('user filter', function (): void {
+        livewire(ListReports::class)
+            ->assertOk()
+            ->assertTableFilterExists('user')
+            ->filterTable('user', $this->user)
+            ->assertCanSeeTableRecords($this->user->reports()->get())
+            ->assertCanNotSeeTableRecords(Report::factory()->count(5)->create());
+    });
+
+    test('status filter', function ($status): void {
+        $this->user->reports()->update(['status' => $status]);
+        livewire(ListReports::class)
+            ->assertOk()
+            ->assertTableFilterExists('status')
+            ->filterTable('status', $status)
+            ->assertCanSeeTableRecords($this->user->reports()->get());
+    })->with([
+        ReportStatus::cases(),
+    ]);
 });

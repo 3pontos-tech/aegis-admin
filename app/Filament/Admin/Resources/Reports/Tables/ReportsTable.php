@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Reports\Tables;
 
+use App\Enums\ReportStatus;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 final class ReportsTable
@@ -32,6 +35,7 @@ final class ReportsTable
                     ->sortable(),
                 TextColumn::make('company.name')
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('user.name')
                     ->numeric()
@@ -46,8 +50,20 @@ final class ReportsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
-            ])
+                SelectFilter::make('status')
+                    ->options(ReportStatus::class),
+                SelectFilter::make('company')
+                    ->preload()
+                    ->searchable()
+                    ->relationship('company', 'name'),
+                SelectFilter::make('user')
+                    ->preload()
+                    ->searchable()
+                    ->relationship('user', 'name'),
+
+            ])->filtersFormColumns(3)
+            ->filtersFormWidth(Width::FourExtraLarge)
+            ->persistFiltersInSession()
             ->recordActions([
                 EditAction::make(),
                 Action::make('Approve')
