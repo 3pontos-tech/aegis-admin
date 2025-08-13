@@ -42,9 +42,15 @@ final class ReportForm
                                 Select::make('status')
                                     ->hidden(fn (string $operation): bool => $operation !== 'edit')
                                     ->options([
+                                        'draft' => ReportStatus::Draft->value,
                                         'submitted' => ReportStatus::Submitted->value,
                                     ])
+                                    ->default(ReportStatus::Draft->value)
                                     ->enum(ReportStatus::class)
+                                    ->required(),
+                                TextInput::make('total')
+                                    ->hidden()
+                                    ->reactive()
                                     ->required(),
                             ]),
                         Tab::make('Expenses')
@@ -55,6 +61,7 @@ final class ReportForm
                                         TextInput::make('amount')
                                             ->label('Amount')
                                             ->numeric()
+                                            ->minValue(1)
                                             ->required(),
 
                                         DateTimePicker::make('date')

@@ -22,12 +22,23 @@ final class ReportFactory extends Factory
             'description' => $this->faker->text(),
             'status' => $this->faker->randomElement(ReportStatus::cases()),
             'submitted_at' => Carbon::now(),
+            'total' => $this->faker->numberBetween(10, 5000),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 
             'company_id' => Company::factory(),
             'user_id' => User::factory(),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Report $report): void {
+            if ($report->expenses->count() > 0) {
+                $total = $report->expenses()->sum('amount');
+                $report->update(['total' => $total]);
+            }
+        });
     }
 
     public function approved(): self

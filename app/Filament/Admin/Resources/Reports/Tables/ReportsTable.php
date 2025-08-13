@@ -24,6 +24,9 @@ final class ReportsTable
                 TextColumn::make('status')
                     ->searchable()
                     ->badge(),
+                TextColumn::make('total')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('submitted_at')
                     ->dateTime()
                     ->sortable(),

@@ -55,6 +55,7 @@ it('should create a report', function (): void {
         'status' => ReportStatus::Draft,
         'company_id' => $this->company->getKey(),
         'user_id' => $this->user->getKey(),
+        'total' => 150,
     ]);
 });
 

@@ -28,6 +28,7 @@ final class Report extends Model
         'submitted_at',
         'company_id',
         'user_id',
+        'total',
     ];
 
     public function company(): BelongsTo
