@@ -60,6 +60,11 @@ final class ExpensesTable
                     ->searchable()
                     ->relationship('user', 'name'),
 
+                SelectFilter::make('category')
+                    ->preload()
+                    ->searchable()
+                    ->relationship('category', 'name'),
+
             ])->filtersFormColumns(3)
             ->filtersFormWidth(Width::FourExtraLarge)
             ->persistFiltersInSession()

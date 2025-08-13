@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Filament\Admin\Resources\Expenses\Pages\ListExpenses;
+use App\Models\Category;
 use App\Models\Company;
 use App\Models\Expense;
 use App\Models\User;
@@ -34,5 +35,15 @@ describe('filter tests', function (): void {
             ->filterTable('user', $this->user)
             ->assertCanSeeTableRecords($this->user->expenses()->get())
             ->assertCanNotSeeTableRecords($anotherExpenses);
+    });
+
+    test('category filter', function (): void {
+        $category = Category::factory()->has(Expense::factory()->count(10)->for($this->company))->create();
+        livewire(ListExpenses::class)
+            ->assertOk()
+            ->assertTableFilterExists('category')
+            ->filterTable('category', $category)
+            ->assertCanSeeTableRecords($category->expenses()->get())
+            ->assertCanNotSeeTableRecords([$this->user->expenses()->get()]);
     });
 });
