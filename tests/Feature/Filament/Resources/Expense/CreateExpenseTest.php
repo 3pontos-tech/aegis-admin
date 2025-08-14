@@ -39,7 +39,7 @@ it('should be able create to create an expense', function (): void {
             'amount' => 10000,
             'date' => now(),
             'description' => 'description for expense',
-            'receipt_path' => $image,
+            'receipt' => $image,
             'company_id' => $this->company->getKey(),
             'category_id' => $this->category->getKey(),
             'report_id' => $this->report->getKey(),

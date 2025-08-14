@@ -32,6 +32,7 @@ it('should create a report', function (): void {
         ->fillForm([
             'company_id' => $this->company->getKey(),
             'title' => 'report title',
+            'user_id' => $this->user->getKey(),
             'description' => 'report description',
             'status' => ReportStatus::Draft,
             'expenses' => [
@@ -39,9 +40,8 @@ it('should create a report', function (): void {
                     'amount' => 150,
                     'date' => now()->format('Y-m-d H:i:s'),
                     'description' => 'Almoço com cliente',
-                    'receipt_path' => $image,
+                    'receipt' => $image,
                     'company_id' => $this->company->getKey(),
-                    'user_id' => $this->user->getKey(),
                     'category_id' => $category->getKey(),
                 ],
             ],

@@ -10,8 +10,8 @@ use App\Models\Category;
 use App\Models\Report;
 use App\Models\User;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -29,11 +29,14 @@ final class ExpenseForm
                 TextInput::make('description')
                     ->required()
                     ->maxLength(255),
-                FileUpload::make('receipt_path')
-                    ->label('Receipt Image')
-                    ->image()
+
+                SpatieMediaLibraryFileUpload::make('receipt')
+                    ->collection('receipt')
+                    ->label('Receipt Path')
                     ->multiple()
+                    ->image()
                     ->required(),
+
                 Select::make('company_id')
                     ->relationship('company', 'name')
                     ->required(),

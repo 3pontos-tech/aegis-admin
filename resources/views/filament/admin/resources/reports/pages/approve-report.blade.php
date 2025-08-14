@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 ?>
+
+
 <x-filament-panels::page>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
         @foreach($this->record->expenses as $expense)
@@ -11,11 +13,12 @@ declare(strict_types=1);
                 <p><strong>Valor:</strong> {{ $expense->amount }}</p>
                 <p><strong>Descrição:</strong> {{ $expense->description }}</p>
 
-                @if ($expense->receipt_path)
+
+                @if ($expense->hasMedia('receipt'))
                     <div class="mt-4 grid grid-cols-2 gap-4">
-                        @foreach ($expense->receipt_path as $image)
+                        @foreach ($expense->getMedia('receipt') as $image)
                             <img
-                                src="{{ asset('storage/' . $image) }}"
+                                src="{{$image->getUrl()}}"
                                 alt="Recibo"
                                 class="w-full h-32 object-cover rounded shadow"
                             />
@@ -36,4 +39,4 @@ declare(strict_types=1);
         </section>
     </form>
 </x-filament-panels::page>
-<?php 
+<?php

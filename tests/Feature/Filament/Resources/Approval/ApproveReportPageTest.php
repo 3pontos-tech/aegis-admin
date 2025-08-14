@@ -40,7 +40,6 @@ it('loads the information at the ApproveReportPage', function (): void {
         $component->assertSee($expense->date->format('d/m/y'));
         $component->assertSee($expense->amount);
         $component->assertSee($expense->description);
-        $component->assertSee($expense->receipt_path);
     });
 });
 

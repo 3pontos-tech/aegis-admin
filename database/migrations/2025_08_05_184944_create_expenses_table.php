@@ -19,7 +19,6 @@ return new class extends Migration
             $table->decimal('amount', 12, 2);
             $table->dateTime('date');
             $table->string('description');
-            $table->string('receipt_path');
             $table->foreignIdFor(Company::class)->constrained('companies');
             $table->foreignIdFor(User::class)->constrained('users');
             $table->foreignIdFor(Report::class)->constrained('reports');

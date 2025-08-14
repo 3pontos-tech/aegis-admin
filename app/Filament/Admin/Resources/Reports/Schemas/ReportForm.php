@@ -7,9 +7,9 @@ namespace App\Filament\Admin\Resources\Reports\Schemas;
 use App\Enums\ReportStatus;
 use App\Models\Category;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
@@ -72,8 +72,9 @@ final class ReportForm
                                             ->label('Description')
                                             ->required(),
 
-                                        FileUpload::make('receipt_path')
-                                            ->label('Receipt')
+                                        SpatieMediaLibraryFileUpload::make('receipt')
+                                            ->collection('receipt')
+                                            ->label('Receipt Path')
                                             ->multiple()
                                             ->image()
                                             ->required(),
