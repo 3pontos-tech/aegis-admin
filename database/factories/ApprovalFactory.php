@@ -20,7 +20,7 @@ final class ApprovalFactory extends Factory
     {
         return [
             'level' => $this->faker->word(),
-            'status' => $this->faker->randomElement([ApprovalStatus::cases()]),
+            'status' => $this->faker->randomElement(ApprovalStatus::cases()),
             'comments' => $this->faker->word(),
             'approved_at' => Carbon::now(),
             'created_at' => Carbon::now(),
@@ -34,14 +34,14 @@ final class ApprovalFactory extends Factory
 
     public function approved(): self
     {
-        return $this->state(fn(array $attributes): array => [
+        return $this->state(fn (array $attributes): array => [
             'status' => ApprovalStatus::Approved,
         ]);
     }
 
     public function rejected(): self
     {
-        return $this->state(fn(array $attributes): array => [
+        return $this->state(fn (array $attributes): array => [
             'status' => ApprovalStatus::Rejected,
         ]);
     }
