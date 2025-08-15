@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Reports\Tables;
 
 use App\Enums\ReportStatus;
-use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -20,26 +19,31 @@ final class ReportsTable
     {
         return $table
             ->columns([
-                TextColumn::make('title')
-                    ->searchable(),
-                TextColumn::make('description')
-                    ->searchable(),
-                TextColumn::make('status')
-                    ->searchable()
-                    ->badge(),
-                TextColumn::make('total')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('submitted_at')
-                    ->dateTime()
-                    ->sortable(),
                 TextColumn::make('company.name')
-                    ->numeric()
                     ->searchable()
+                    ->badge()
                     ->sortable(),
                 TextColumn::make('user.name')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('status')
+                    ->searchable()
+                    ->badge(),
+
+                TextColumn::make('title')
+                    ->searchable(),
+                TextColumn::make('description')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable(),
+
+                TextColumn::make('total')
+                    ->searchable()
+                    ->money('BRL')
+                    ->sortable(),
+                TextColumn::make('submitted_at')
+                    ->dateTime()
+                    ->sortable(),
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -66,8 +70,6 @@ final class ReportsTable
             ->persistFiltersInSession()
             ->recordActions([
                 EditAction::make(),
-                Action::make('Approve')
-                    ->url(fn ($record) => route('filament.admin.resources.reports.approve-report', $record)),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

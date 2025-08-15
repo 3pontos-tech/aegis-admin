@@ -6,14 +6,13 @@ namespace App\Filament\Admin\Resources\Reports\Schemas;
 
 use App\Enums\ReportStatus;
 use App\Models\Category;
+use App\Models\Report;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
-use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 final class ReportForm
@@ -53,63 +52,52 @@ final class ReportForm
                                     ->reactive()
                                     ->required(),
                             ]),
-                        Tab::make('Expenses')
-                            ->schema([
-                                Repeater::make('expenses')
-                                    ->relationship('expenses')
-                                    ->schema([
-                                        TextInput::make('amount')
-                                            ->label('Amount')
-                                            ->numeric()
-                                            ->minValue(1)
-                                            ->required(),
-
-                                        DateTimePicker::make('date')
-                                            ->label('Date')
-                                            ->required(),
-
-                                        TextInput::make('description')
-                                            ->label('Description')
-                                            ->required(),
-
-                                        SpatieMediaLibraryFileUpload::make('receipt')
-                                            ->collection('receipt')
-                                            ->label('Receipt Path')
-                                            ->multiple()
-                                            ->image()
-                                            ->required(),
-
-                                        TextInput::make('company_id')
-                                            ->required()
-                                            ->hidden(),
-
-                                        TextInput::make('user_id')
-                                            ->label('User')
-                                            ->hidden()
-                                            ->required(),
-
-                                        Select::make('category_id')
-                                            ->label('Category')
-                                            ->options(function (Get $get) {
-                                                if (! $companyId = $get('../../company_id')) {
-                                                    return [];
-                                                }
-
-                                                return Category::query()->where('company_id', $companyId)->pluck('name', 'id')->toArray();
-                                            })
-                                            ->reactive()
-                                            ->searchable()
-                                            ->required(),
-                                    ])
-                                    ->defaultItems(1)
-                                    ->mutateRelationshipDataBeforeCreateUsing(function (array $data, Get $get) {
-                                        $data['company_id'] = $get('company_id');
-                                        $data['user_id'] = auth()->id();
-
-                                        return $data;
-                                    }),
-                            ]),
                     ]),
             ]);
+    }
+
+    public static function configureExpenseAction(): array
+    {
+        return [
+            TextInput::make('amount')
+                ->label('Amount')
+                ->prefix('R$')
+                ->minValue(1)
+                ->required(),
+
+            DateTimePicker::make('date')
+                ->label('Date')
+                ->native(false)
+                ->required(),
+
+            TextInput::make('description')
+                ->label('Description')
+                ->required(),
+
+            SpatieMediaLibraryFileUpload::make('receipt')
+                ->collection('receipt')
+                ->label('Receipt Path')
+                ->multiple()
+
+                ->image()
+                ->required(),
+
+            TextInput::make('company_id')
+                ->required()
+                ->hidden(),
+
+            TextInput::make('user_id')
+                ->label('User')
+                ->hidden()
+                ->required(),
+
+            Select::make('category_id')
+                ->label('Category')
+                ->options(fn(Report $record) => Category::query()->where('company_id', $record->company_id)->pluck('name', 'id')->toArray())
+                ->preload()
+                ->searchable()
+                ->required(),
+        ];
+
     }
 }

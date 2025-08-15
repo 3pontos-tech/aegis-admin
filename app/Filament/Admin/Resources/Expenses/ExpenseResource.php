@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Expenses;
 
-use App\Filament\Admin\Resources\Expenses\Pages\CreateExpense;
 use App\Filament\Admin\Resources\Expenses\Pages\EditExpense;
 use App\Filament\Admin\Resources\Expenses\Pages\ListExpenses;
 use App\Filament\Admin\Resources\Expenses\Schemas\ExpenseForm;
@@ -46,7 +45,7 @@ final class ExpenseResource extends Resource
     {
         return [
             'index' => ListExpenses::route('/'),
-            'create' => CreateExpense::route('/create'),
+            // 'create' => CreateExpense::route('/create'),
             'edit' => EditExpense::route('/{record}/edit'),
         ];
     }

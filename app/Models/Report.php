@@ -9,6 +9,7 @@ use App\Observers\ReportObserver;
 use App\Policies\ReportPolicy;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -49,6 +50,11 @@ final class Report extends Model
     public function reimbursement(): HasOne
     {
         return $this->hasOne(Reimbursement::class);
+    }
+
+    public function total(): Attribute
+    {
+        return Attribute::get(fn () => $this->expenses()->sum('amount'));
     }
 
     protected function casts(): array

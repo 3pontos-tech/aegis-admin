@@ -18,10 +18,13 @@ final class ExpenseFactory extends Factory
 
     public function definition(): array
     {
+        $description = $this->faker->randomElement(['Uber', 'Breakfast', 'Lunch', 'Gas', 'Taxi']);
+        $amount = $this->faker->randomElement([50_00, 70_00, 100_00, 200_00, 300_00]);
+
         return [
-            'amount' => $this->faker->word(),
+            'amount' => $amount,
             'date' => Carbon::now(),
-            'description' => $this->faker->text(),
+            'description' => $description,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 
