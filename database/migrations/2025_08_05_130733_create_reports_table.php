@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Models\Company;
+use App\Models\User;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('reports', function (Blueprint $table): void {
+            $table->id();
+            $table->string('title');
+            $table->string('description');
+            $table->string('status')->comment("'draft, submitted, approved, rejected, reimbursed'");
+            $table->decimal('total', 12, 2);
+            $table->dateTime('submitted_at')->nullable();
+            $table->foreignIdFor(Company::class)->constrained('companies');
+            $table->foreignIdFor(User::class)->constrained('users');
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('reports');
+    }
+};
