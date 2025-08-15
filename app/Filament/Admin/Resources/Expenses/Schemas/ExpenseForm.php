@@ -20,11 +20,14 @@ final class ExpenseForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(1)
             ->components([
                 TextInput::make('amount')
                     ->required()
+                    ->prefix('R$')
                     ->numeric(),
                 DateTimePicker::make('date')
+                    ->native(false)
                     ->required(),
                 TextInput::make('description')
                     ->required()
@@ -37,19 +40,15 @@ final class ExpenseForm
                     ->image()
                     ->required(),
 
-                Select::make('company_id')
-                    ->relationship('company', 'name')
-                    ->required(),
-                CompanyDependentSelect::make('user_id', User::class, 'name')
-                    ->label('User')
-                    ->required(),
-                CompanyDependentSelect::make('report_id', Report::class, 'title', 'status', ReportStatus::Submitted->value)
-                    ->label('Report')
+                Select::make('user_id')
+                    ->relationship('user', 'name'),
+
+                Select::make('category_id')
+                    ->label('Category')
+                    ->options(fn() => Category::query()->pluck('name', 'id'))
+                    ->preload()
                     ->required(),
 
-                CompanyDependentSelect::make('category_id', Category::class, 'name')
-                    ->label('Category')
-                    ->required(),
             ]);
     }
 }

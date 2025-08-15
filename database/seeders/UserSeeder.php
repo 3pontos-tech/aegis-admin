@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -17,7 +18,10 @@ final class UserSeeder extends Seeder
         if (app()->isLocal()) {
             User::factory()->admin()->create();
         }
+        $company = Company::factory()->create();
 
-        User::factory(10)->create();
+        User::factory(10)
+            ->recycle($company)
+            ->create();
     }
 }

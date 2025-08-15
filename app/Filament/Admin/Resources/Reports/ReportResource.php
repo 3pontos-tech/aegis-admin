@@ -8,6 +8,7 @@ use App\Filament\Admin\Resources\Reports\Pages\ApproveReport;
 use App\Filament\Admin\Resources\Reports\Pages\CreateReport;
 use App\Filament\Admin\Resources\Reports\Pages\EditReport;
 use App\Filament\Admin\Resources\Reports\Pages\ListReports;
+use App\Filament\Admin\Resources\Reports\RelationManagers\ExpensesRelationManager;
 use App\Filament\Admin\Resources\Reports\Schemas\ReportForm;
 use App\Filament\Admin\Resources\Reports\Tables\ReportsTable;
 use App\Models\Report;
@@ -39,7 +40,7 @@ final class ReportResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ExpensesRelationManager::make(),
         ];
     }
 
