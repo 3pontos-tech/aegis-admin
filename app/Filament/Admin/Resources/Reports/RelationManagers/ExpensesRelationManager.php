@@ -27,9 +27,17 @@ final class ExpensesRelationManager extends RelationManager
 
                         return $data;
                     })
+                    ->after($this->updateReportTotal())
                     ->modalWidth(Width::Medium)
                     ->slideOver()
                     ->modal(),
             ]);
+    }
+
+    private function updateReportTotal(): void
+    {
+        $this->ownerRecord->update([
+            'total' => $this->ownerRecord->expenses()->sum('amount'),
+        ]);
     }
 }

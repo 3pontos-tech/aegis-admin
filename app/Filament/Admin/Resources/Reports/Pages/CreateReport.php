@@ -17,10 +17,7 @@ final class CreateReport extends CreateRecord
         $data['user_id'] = auth()->id();
         $data['status'] = ReportStatus::Draft;
 
-        collect($this->data['expenses'])->each(function (array $expense) use (&$data): void {
-            $this->data['total'] += $expense['amount'];
-            $data['total'] = $this->data['total'];
-        });
+        $data['total'] = 0;
 
         return $data;
     }
