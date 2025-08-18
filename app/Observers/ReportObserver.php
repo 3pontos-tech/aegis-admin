@@ -11,9 +11,9 @@ final class ReportObserver
 {
     public function updated(Report $report): void
     {
-        if ($report->isDirty('status') && $report->status === ReportStatus::Submitted) {
+        if ($report->status === ReportStatus::Submitted) {
             $report->submitted_at = now();
-            $report->save();
+            $report->saveQuietly();
         }
     }
 }
