@@ -16,7 +16,6 @@ final class CategoryFactory extends Factory
     public function definition(): array
     {
         $categories = $this->faker
-            ->unique()
             ->randomElement(['Food', 'Transportation', 'Entertainment', 'Health', 'Education', 'Other']);
 
         return [

@@ -19,8 +19,6 @@ final class StatsOverview extends StatsOverviewWidget
 {
     use InteractsWithPageFilters;
 
-    protected int|array|null $columns = 2;
-
     protected function getHeading(): ?string
     {
         return 'Analytics';
@@ -40,7 +38,7 @@ final class StatsOverview extends StatsOverviewWidget
                 ->description('Number of companies')
                 ->descriptionColor('success'),
 
-            Stat::make('Platform Spent', 'R$: ' . $totalSpent)
+            Stat::make('Platform Spent', 'R$: '.$totalSpent)
                 ->icon(Heroicon::Link)
                 ->description('Sum of Companies Spent')
                 ->descriptionColor('success'),

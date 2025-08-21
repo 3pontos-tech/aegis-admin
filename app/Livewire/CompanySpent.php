@@ -21,7 +21,7 @@ final class CompanySpent extends ChartWidget
 
     public function getHeading(): string
     {
-        if ($this->companyName === null || $this->companyName === '' || $this->companyName === '0') {
+        if ($this->companyName === null || $this->companyName === '') {
             return 'Select a Company Witch Has Reports';
         }
 

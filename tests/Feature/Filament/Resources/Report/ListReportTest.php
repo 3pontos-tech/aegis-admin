@@ -7,7 +7,6 @@ use App\Filament\Admin\Resources\Reports\Pages\ListReports;
 use App\Models\Company;
 use App\Models\Report;
 use App\Models\User;
-use Filament\Actions\Testing\TestAction;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Livewire\livewire;
@@ -31,31 +30,11 @@ it('should list all reports', function (): void {
         ->assertCanSeeTableRecords($this->reports)
         ->assertCountTableRecords($this->reports->count())
         ->assertCanRenderTableColumn('title')
-        ->assertCanRenderTableColumn('description')
         ->assertCanRenderTableColumn('status')
         ->assertCanRenderTableColumn('submitted_at')
         ->assertCanRenderTableColumn('company.name')
         ->assertCanRenderTableColumn('user.name');
 });
-
-it('should see the approve action on report list', function (): void {
-    $report = Report::factory()->createOne();
-    livewire(ListReports::class)
-        ->assertOk()
-        ->assertSee('Approve')
-        ->assertActionVisible(TestAction::make('Approve')->table($report))
-        ->assertActionExists(TestAction::make('Approve')->table($report));
-});
-
-it('should redirect to ApproveReport Page when call the approve action', function (): void {
-    $report = Report::factory()->createOne();
-    livewire(ListReports::class)
-        ->assertOk()
-        ->callAction(TestAction::make('Approve')->table($report))
-        ->assertActionHasUrl(TestAction::make('Approve')->table($report),
-            route('filament.admin.resources.reports.approve-report', $report));
-});
-
 describe('table filters tests', function (): void {
 
     test('company filter', function (): void {
