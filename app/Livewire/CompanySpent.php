@@ -17,7 +17,7 @@ final class CompanySpent extends ChartWidget
 
     private ?string $companyName = '';
 
-    private ?string $total = '';
+    private string|int|null $total = '';
 
     public function getHeading(): string
     {
