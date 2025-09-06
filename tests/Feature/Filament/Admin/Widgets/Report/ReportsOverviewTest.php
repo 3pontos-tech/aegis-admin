@@ -28,7 +28,7 @@ it('should display the average of reports total', function (): void {
     Livewire::actingAs($this->user)
         ->test(ReportsOverview::class)
         ->assertOk()
-        ->assertSee('R$: ' . $avg);
+        ->assertSee('R$: '.$avg);
 });
 it('should display the total of reports based on status', function (): void {
     // Default => All
@@ -48,5 +48,5 @@ it('should display the total of reports based on status', function (): void {
         ->withUrlParams(['activeTab' => 2])
         ->test(ReportsOverview::class)
         ->assertSeeInOrder(['Total', 5])
-        ->assertSee('R$: ' . $avg);
+        ->assertSee('R$: '.$avg);
 });

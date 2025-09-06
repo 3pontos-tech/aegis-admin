@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Str;
 use App\Filament\Admin\Resources\Companies\Pages\CreateCompany;
 use App\Models\Company;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseCount;
