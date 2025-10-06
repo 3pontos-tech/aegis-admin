@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.15.0
 
-FROM redis:7-alpine3.21@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08
+FROM redis:7-alpine3.21@sha256:7a7c6b5c49a6896d0a58ee0c6dc0dcabe14f30f0a2f7d2d1362d276fa2d43166
 
 ENV TZ=America/Sao_Paulo
 
